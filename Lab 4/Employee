@@ -1,0 +1,106 @@
+cqlsh:employee> CREATE KEYSPACE employee WITH REPLICATION={ 'class' : 'SimpleStrategy', 'replication_factor' : 1};
+cqlsh:employee> USE employee;
+cqlsh:employee> create table employee_info(emp_id int PRIMARY KEY, emp_name text,
+            ... designation text, date_of_joining timestamp, salary double PRIMARY KEY, dept_name text);
+cqlsh:employee> CREATE TABLE employee_info(emp_id int, emp_name text, designation text, date_of_joining timestamp, salary double, dept_name text, PRIMARY KEY(emp_id, salary));
+cqlsh:employee> BEGIN BATCH INSERT INTO
+            ... employee_info(emp_id,emp_name,designation,date_of_joining,salary,dept_name)
+            ... VALUES(100,'Arjun','MANAGER','2021-09-11',30000,'TESTING');
+            ... INSERT INTO
+            ... employee_info(emp_id,emp_name,designation,date_of_joining,salary,dept_name)
+            ... VALUES(111,'Vishu','ASSOCIATE','2021-06-22',25000,'DEVELOPING');
+            ... INSERT INTO
+            ... employee_info(emp_id,emp_name,designation,date_of_joining,salary,dept_name)
+            ... VALUES(121,'Chethan','MANAGER','2021-03-30',35000,'HR');
+            ... INSERT INTO
+            ... employee_info(emp_id,emp_name,designation,date_of_joining,salary,dept_name)
+            ... VALUES(115,'Krish','ASSISTANT','2021-12-30',20000,'DEVELOPING');
+            ... INSERT INTO
+            ... employee_info(emp_id,emp_name,designation,date_of_joining,salary,dept_name)
+            ... VALUES(105,'Yash','ASSOCIATE','2021-06-25',25000,'TESTING');
+            ... APPLY BATCH;
+cqlsh:employee> SELECT * FROM employee_info
+            ... ;
+
+ emp_id | salary | date_of_joining                 | dept_name  | designation | emp_name
+--------+--------+---------------------------------+------------+-------------+----------
+    105 |  25000 | 2021-06-24 18:30:00.000000+0000 |    TESTING |   ASSOCIATE |    Yash
+    111 |  25000 | 2021-06-21 18:30:00.000000+0000 | DEVELOPING |   ASSOCIATE |      Vishu
+    121 |  35000 | 2021-03-29 18:30:00.000000+0000 |         HR |     MANAGER |     Chethan
+    115 |  20000 | 2021-12-29 18:30:00.000000+0000 | DEVELOPING |   ASSISTANT |    Krish
+    100 |  30000 | 2021-09-10 18:30:00.000000+0000 |    TESTING |     MANAGER |     Arjun
+
+(5 rows)
+cqlsh:employee> UPDATE employee_info SET emp_name = 'Sush', dept_name = 'DEVELOPING' WHERE emp_id = 121;
+cqlsh:employee> UPDATE employee_info SET emp_name = 'Sush', dept_name = 'DEVELOPING' WHERE emp_id = 121 AND salary = 35000;
+cqlsh:employee> SELECT * FROM employee_info ;
+
+ emp_id | salary | date_of_joining                 | dept_name  | designation | emp_name
+--------+--------+---------------------------------+------------+-------------+----------
+    105 |  25000 | 2021-06-24 18:30:00.000000+0000 |    TESTING |   ASSOCIATE |    Yash
+    111 |  25000 | 2021-06-21 18:30:00.000000+0000 | DEVELOPING |   ASSOCIATE |      Vishu
+    121 |  35000 | 2021-03-29 18:30:00.000000+0000 | DEVELOPING |     MANAGER |  Sush
+    115 |  20000 | 2021-12-29 18:30:00.000000+0000 | DEVELOPING |   ASSISTANT |    Krish
+    100 |  30000 | 2021-09-10 18:30:00.000000+0000 |    TESTING |     MANAGER |     Arjun
+
+(5 rows)
+cqlsh:employee> SELECT * FROM employee_info WHERE emp_id in (105, 111, 121, 115, 100) order by salary;
+cqlsh:employee> paging off
+Disabled Query paging.
+cqlsh:employee> SELECT * FROM employee_info WHERE emp_id in (105, 111, 121, 115, 100) order by salary;
+
+ emp_id | salary | date_of_joining                 | dept_name  | designation | emp_name
+--------+--------+---------------------------------+------------+-------------+----------
+    115 |  20000 | 2021-12-29 18:30:00.000000+0000 | DEVELOPING |   ASSISTANT |    Krish
+    105 |  25000 | 2021-06-24 18:30:00.000000+0000 |    TESTING |   ASSOCIATE |    Yash
+    111 |  25000 | 2021-06-21 18:30:00.000000+0000 | DEVELOPING |   ASSOCIATE |      Vishu
+    100 |  30000 | 2021-09-10 18:30:00.000000+0000 |    TESTING |     MANAGER |     Arjun
+    121 |  35000 | 2021-03-29 18:30:00.000000+0000 | DEVELOPING |     MANAGER |  Sush
+
+(5 rows)
+cqlsh:employee> ALTER TABLE employee_info ADD projects text;
+cqlsh:employee> UPDATE employee_info SET projects = 'Chat App' WHERE emp_id = 111;
+cqlsh:employee> UPDATE employee_info SET projects = 'Chat App' WHERE emp_id = 111 and salary = 25000;
+cqlsh:employee> UPDATE employee_info SET projects = 'Discord Bot' WHERE emp_id = 115 and salary = 20000;
+cqlsh:employee> UPDATE employee_info SET projects = 'Campus Portal' WHERE emp_id = 105 and salary = 25000;
+cqlsh:employee> UPDATE employee_info SET projects = 'YouTube Downloader' WHERE emp_id = 100 and salary = 30000;
+cqlsh:employee> UPDATE employee_info SET projects = 'Library Management System ' WHERE emp_id = 121 and salary = 35000;
+cqlsh:employee> SELECT * FROM employee_infor
+            ... ;
+cqlsh:employee> SELECT * FROM employee_info ;
+
+ emp_id | salary | date_of_joining                 | dept_name  | designation | emp_name | projects
+--------+--------+---------------------------------+------------+-------------+----------+----------------------------
+    105 |  25000 | 2021-06-24 18:30:00.000000+0000 |    TESTING |   ASSOCIATE |    Yash |              Campus Portal
+    111 |  25000 | 2021-06-21 18:30:00.000000+0000 | DEVELOPING |   ASSOCIATE |      Vishu |                   Chat App
+    121 |  35000 | 2021-03-29 18:30:00.000000+0000 | DEVELOPING |     MANAGER |  Sush | Library Management System 
+    115 |  20000 | 2021-12-29 18:30:00.000000+0000 | DEVELOPING |   ASSISTANT |    Krish |                Discord Bot
+    100 |  30000 | 2021-09-10 18:30:00.000000+0000 |    TESTING |     MANAGER |     Arjun |         YouTube Downloader
+
+(5 rows)
+cqlsh:employee> NSERT INTO
+            ... employee_info(emp_id,emp_name,designation,date_of_joining,salary,dept_name)
+            ... 
+            ... ;
+cqlsh:employee> INSERT INTO
+            ... employee_info(emp_id,emp_name,designation,date_of_joining,salary,dept_name)
+            ... VALUES(110,'SAM','ASSOCIATE','2021-01-11',28000,'TESTING') USING TTL 15;
+cqlsh:employee> SELECT TTL(emp_name) from employee_info WHERE emp_id = 110;
+
+ ttl(emp_name)
+---------------
+             3
+
+(1 rows)
+cqlsh:employee> SELECT * FROM employee_info;
+
+ emp_id | salary | date_of_joining                 | dept_name  | designation | emp_name | projects
+--------+--------+---------------------------------+------------+-------------+----------+----------------------------
+    105 |  25000 | 2021-06-24 18:30:00.000000+0000 |    TESTING |   ASSOCIATE |    Yash |              Campus Portal
+    111 |  25000 | 2021-06-21 18:30:00.000000+0000 | DEVELOPING |   ASSOCIATE |      Vishu |                   Chat App
+    121 |  35000 | 2021-03-29 18:30:00.000000+0000 | DEVELOPING |     MANAGER |  Sush | Library Management System 
+    115 |  20000 | 2021-12-29 18:30:00.000000+0000 | DEVELOPING |   ASSISTANT |    Krish |                Discord Bot
+    100 |  30000 | 2021-09-10 18:30:00.000000+0000 |    TESTING |     MANAGER |     Arjun |         YouTube Downloader
+
+(5 rows)
+

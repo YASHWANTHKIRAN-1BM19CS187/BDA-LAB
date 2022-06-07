@@ -1,0 +1,44 @@
+cqlsh:library> CREATE KEYSPACE library WITH replication = {'class': 'SimpleStrategy','replication_factor':1};
+cqlsh:library> USE library ;
+cqlsh:library> CREATE TABLE Library_info(stud_id int, stud_name text,  book_name text, book_id text, date_of_issue timestamp, counter_value counter, PRIMARY KEY(stud_id,stud_name, book_name, book_id, date_of_issue));
+cqlsh:library> BEGIN COUNTER BATCH
+           ... UPDATE library_info set counter_value +=1 where stud_id = 111 and stud_name = 'VIRAT' and book_name = 'Operations Research' and book_id = '56TXT' and date_of_issue = '2021-09-12';
+           ... UPDATE library_info set counter_value +=1 where stud_id = 112 and stud_name = 'ABD' and book_name = 'Engineering Mathematics-3' and book_id = '5ERW4' and date_of_issue = '2021-04-10';
+           ... UPDATE library_info set counter_value +=1 where stud_id = 113 and stud_name = 'ROHIT' and book_name = 'Robinson Crusoe' and book_id = '34EDC' and date_of_issue = '2021-02-01';
+           ... UPDATE library_info set counter_value +=1 where stud_id = 114 and stud_name = 'YASH' and book_name = 'Engineering Drawing' and book_id = '123ER' and date_of_issue = '2021-04-03';
+           ... APPLY BATCH;
+cqlsh:library> SELECT * FROM library_info ;
+
+ stud_id | stud_name | book_name                 | book_id | date_of_issue                   | counter_value
+---------+-----------+---------------------------+---------+---------------------------------+---------------
+     114 |      YASH |       Engineering Drawing |   123ER | 2021-04-02 18:30:00.000000+0000 |             1
+     111 |     VIRAT |       Operations Research |   56TXT | 2021-09-11 18:30:00.000000+0000 |             1
+     113 |     ROHIT |           Robinson Crusoe |   34EDC | 2021-01-31 18:30:00.000000+0000 |             1
+     112 |       ABD | Engineering Mathematics-3 |   5ERW4 | 2021-04-09 18:30:00.000000+0000 |             1
+
+(4 rows)
+
+cqlsh:library> UPDATE library_info set counter_value += 1 where stud_id = 112 and stud_name = 'ABD' and book_name = 'Engineering Mathematics-3' and book_id = '5ERW4' and date_of_issue = '2021-04-09';
+cqlsh:library> SELECT * FROM library_info ;
+
+ stud_id | stud_name | book_name                 | book_id | date_of_issue                   | counter_value
+---------+-----------+---------------------------+---------+---------------------------------+---------------
+     114 |       YASH|       Engineering Drawing |   123ER | 2021-04-02 18:30:00.000000+0000 |             1
+     111 |      VIRAT|       Operations Research |   56TXT | 2021-09-11 18:30:00.000000+0000 |             1
+     113 |      ROHIT|           Robinson Crusoe |   34EDC | 2021-01-31 18:30:00.000000+0000 |             1
+     112 |        ABD| Engineering Mathematics-3 |   5ERW4 | 2021-04-09 18:30:00.000000+0000 |             2
+
+cqlsh:library> copy library_info(stud_id,stud_name, book_name, book_id, date_of_issue,counter_value) to 'library_info.csv' ;
+Using 11 child processes
+
+Starting copy of library.library_info with columns [stud_id, stud_name, book_name, book_id, date_of_issue, counter_value].
+Processed: 6 rows; Rate:      39 rows/s; Avg. rate:      39 rows/s
+6 rows exported to 1 files in 0.165 seconds.
+
+cqlsh:library> copy library_info(stud_id,stud_name, book_name, book_id, date_of_issue,counter_value) from 'library_info.csv' ;
+Using 11 child processes
+
+Starting copy of library.library_info with columns [stud_id, stud_name, book_name, book_id, date_of_issue, counter_value].
+Processed: 6 rows; Rate:      10 rows/s; Avg. rate:      15 rows/s
+6 rows imported from 1 files in 0.392 seconds (0 skipped).
+

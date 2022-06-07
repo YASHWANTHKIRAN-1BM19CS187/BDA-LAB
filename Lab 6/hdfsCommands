@@ -1,0 +1,74 @@
+hduser@bmsce-Precision-T1700:~$ start-all.sh
+
+hduser@bmsce-Precision-T1700:~$ jps
+7184 NodeManager
+6851 ResourceManager
+6692 SecondaryNameNode
+6313 NameNode
+7306 Jps
+6479 DataNode
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -mkdir /1BM19CS187
+
+hduser@bmsce-Precision-T1700:~$ hadoop fs -ls /
+Found 5 items
+drwxr-xr-x   - hduser supergroup          0 2022-06-01 09:30 /1BM19CS187
+drwxr-xr-x   - hduser supergroup          0 2022-05-31 09:58 /abcde
+drwxr-xr-x   - hduser supergroup          0 2022-05-31 10:04 /abcdef
+drwxrwxr-x   - hduser supergroup          0 2019-08-01 16:19 /tmp
+drwxr-xr-x   - hduser supergroup          0 2019-08-01 16:03 /user
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -put /home/hduser/Desktop/Welcome.txt /1BM19CS187/WC.txt
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -cat /1BM19CS187/WC.txt
+Science in our Daily Lives
+As I have mentioned earlier Science has got many changes in our lives. First of all, transportation is easier now. With the help of Science it now easier to travel long distances. Moreover, the time of traveling is also reduced. Various high-speed vehicles are available these days. These vehicles have totally changed. The phase of our society. Science upgraded steam engines to electric engines. In earlier times people were traveling with cycles. But now everybody travels on motorcycles and cars. This saves time and effort. And this is all possible with the help of Science.
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -get /1BM19CS187/WC.txt /home/hduser/Desktop/WWC.txt
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -put /home/hduser/Desktop/Welcome.txt /1BM19CS187/WC2.txt
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -getmerge /1BM19CS187/WC.txt /1BM19CS187/WC2.txt /home/hduser/Desktop/Merge.txt
+
+hduser@bmsce-Precision-T1700:~$ hadoop fs -getfacl /1BM19CS187/
+# file: /1BM19CS187
+# owner: hduser
+# group: supergroup
+user::rwx
+group::r-x
+other::r-x
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -copyToLocal /1BM19CS187/WC.txt /home/hduser/Desktop
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -mv /1BM19CS187 /1bm19cs187
+
+hduser@bmsce-Precision-T1700:~$ hadoop fs -ls /
+Found 5 items
+drwxr-xr-x   - hduser supergroup          0 2022-06-01 10:03 /1bm19cs187
+drwxr-xr-x   - hduser supergroup          0 2022-05-31 09:58 /abcde
+drwxr-xr-x   - hduser supergroup          0 2022-05-31 10:04 /abcdef
+drwxrwxr-x   - hduser supergroup          0 2019-08-01 16:19 /tmp
+drwxr-xr-x   - hduser supergroup          0 2019-08-01 16:03 /user
+
+hduser@bmsce-Precision-T1700:~$ hadoop fs -ls /1bm19cs187
+Found 2 items
+-rw-r--r--   1 hduser supergroup       1812 2022-06-01 09:39 /1bm19cs187/WC.txt
+-rw-r--r--   1 hduser supergroup        607 2022-06-01 10:03 /1bm19cs187/WC2.txt
+
+hduser@bmsce-Precision-T1700:~$ hdfs dfs -cp /1bm19cs187 /1BM19CS187
+
+hduser@bmsce-Precision-T1700:~$ hadoop fs -ls /
+Found 6 items
+drwxr-xr-x   - hduser supergroup          0 2022-06-01 10:15 /1BM19CS187
+drwxr-xr-x   - hduser supergroup          0 2022-06-01 10:03 /1bm19cs187
+drwxr-xr-x   - hduser supergroup          0 2022-05-31 09:58 /abcde
+drwxr-xr-x   - hduser supergroup          0 2022-05-31 10:04 /abcdef
+drwxrwxr-x   - hduser supergroup          0 2019-08-01 16:19 /tmp
+drwxr-xr-x   - hduser supergroup          0 2019-08-01 16:03 /user
+
+hduser@bmsce-Precision-T1700:~$ hadoop fs -ls /1BM19CS187
+Found 2 items
+-rw-r--r--   1 hduser supergroup       1812 2022-06-01 10:15 /1BM19CS187/WC.txt
+-rw-r--r--   1 hduser supergroup        607 2022-06-01 10:15 /1BM19CS187/WC2.txt
+
+

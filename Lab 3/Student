@@ -1,0 +1,194 @@
+bmsce@bmsce-Precision-T1700:~$ mongo
+MongoDB shell version v3.6.8
+connecting to: mongodb://127.0.0.1:27017
+Implicit session: session { "id" : UUID("d66acdb3-8482-417d-8b75-d65dae4b53ee") }
+MongoDB server version: 3.6.8
+Server has startup warnings: 
+2022-04-11T18:49:15.627+0530 I STORAGE  [initandlisten] 
+2022-04-11T18:49:15.627+0530 I STORAGE  [initandlisten] ** WARNING: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine
+2022-04-11T18:49:15.627+0530 I STORAGE  [initandlisten] **          See http://dochub.mongodb.org/core/prodnotes-filesystem
+2022-04-11T18:49:18.771+0530 I CONTROL  [initandlisten] 
+2022-04-11T18:49:18.771+0530 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2022-04-11T18:49:18.771+0530 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2022-04-11T18:49:18.771+0530 I CONTROL  [initandlisten] 
+> use Student
+switched to db Student
+> db.createCollection("student");
+{ "ok" : 1 }
+> db.Student.insert({_id:1,StudName:"Yash",Grade:"vii",Hobbies:"InternetSurfing"});
+WriteResult({ "nInserted" : 1 })
+> db.Student.update({_id:3,StudName:"Aryan",Grade:"vii"},{$set:{Hobbies:"skating"}},{upsert:true});
+WriteResult({ "nMatched" : 0, "nUpserted" : 1, "nModified" : 0, "_id" : 3 })
+> db.Student.find({StudName:"Aryan"});
+{ "_id" : 3, "Grade" : "vii", "StudName" : "Aryan", "Hobbies" : "skating" }
+> db.Student.find({},{StudName:1,Grade:1,_id:0});
+{ "StudName" : "Yash", "Grade" : "vii" }
+{ "Grade" : "vii", "StudName" : "Aryan" }
+
+> db.Student.find({Grade:{$eq:'vii'}}).pretty();
+{
+	"_id" : 1,
+	"StudName" : "Yash",
+	"Grade" : "vii",
+	"Hobbies" : "InternetSurfing"
+}
+{ "_id" : 3, "Grade" : "vii", "StudName" : "Aryan", "Hobbies" : "skating" }
+> db.Student.find({Grade:{$eq:'vii'}});
+{ "_id" : 1, "StudName" : "Yash", "Grade" : "vii", "Hobbies" : "InternetSurfing" }
+{ "_id" : 3, "Grade" : "vii", "StudName" : "Aryan", "Hobbies" : "skating" }
+> db.Student.find({Grade:{$eq:'vii'}}).pretty();
+{
+	"_id" : 1,
+	"StudName" : "Yash",
+	"Grade" : "vii",
+	"Hobbies" : "InternetSurfing"
+}
+{ "_id" : 3, "Grade" : "vii", "StudName" : "Aryan", "Hobbies" : "skating" }
+> db.Student.find({Hobbies:{$in:['Chess','Skating']}}).pretty();
+> db.Student.find({Hobbies:{$in:['Skating']}}).pretty();
+> db.Student.find({Hobbies:{$in:['skating']}}).pretty();
+{ "_id" : 3, "Grade" : "vii", "StudName" : "Aryan", "Hobbies" : "skating" }
+> db.Student.find({StudName:/^M/}).pretty();
+{
+	"_id" : 1,
+	"StudName" : "Yash",
+	"Grade" : "vii",
+	"Hobbies" : "InternetSurfing"
+}
+> db.Student.find({StudName:/e/}).pretty();
+{
+	"_id" : 1,
+	"StudName" : "Yash",
+	"Grade" : "vii",
+	"Hobbies" : "InternetSurfing"
+}
+> db.Student.count();
+2
+> db.Student.find().sort({StudName:-1}).pretty();
+{
+	"_id" : 1,
+	"StudName" : "Yash",
+	"Grade" : "vii",
+	"Hobbies" : "InternetSurfing"
+}
+{ "_id" : 3, "Grade" : "vii", "StudName" : "Aryan", "Hobbies" : "skating" }
+> db.Student.save({StudName:"Chethana",Greade:"vi"})
+WriteResult({ "nInserted" : 1 })
+> db.Students.update({_id:4},{$set:{Location:"Network"}})
+WriteResult({ "nMatched" : 0, "nUpserted" : 0, "nModified" : 0 })
+> db.Students.update({_id:4},{$unset:{Location:"Network"}})
+WriteResult({ "nMatched" : 0, "nUpserted" : 0, "nModified" : 0 })
+> db.Student.find({_id:1},{StudName:1,Grade:1,_id:0});
+{ "StudName" : "Yash", "Grade" : "vii" }
+> db.Student.find({Grade:{$ne:'VII'}}).pretty();
+{
+	"_id" : 1,
+	"StudName" : "Yash",
+	"Grade" : "vii",
+	"Hobbies" : "InternetSurfing"
+}
+{ "_id" : 3, "Grade" : "vii", "StudName" : "Aryan", "Hobbies" : "skating" }
+{
+	"_id" : ObjectId("6253f413e88b8c9e787b194e"),
+	"StudName" : "Chethana",
+	"Greade" : "vi"
+}
+> db.Student.find({StudName:/s$/}).pretty();
+> db.Students.update({_id:3},{$set:{Location:null}})
+WriteResult({ "nMatched" : 0, "nUpserted" : 0, "nModified" : 0 })
+> db.Students.count()
+0
+> db.Students.count({Grade:"VII"})
+0
+> db.Student.find({Grade:"VII"}).limit(3).pretty();
+> db.Student.update({_id:3},{$set:{Location:null}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.Student.count({Grade:"VII"})
+0
+> db.Students.count({Grade:"vii"})
+0
+> db.Student.count()
+3
+> db.Student.count({Grade:"vii"})
+2
+> db.Student.find({Grade:"vii"}).limit(3).pretty();
+{
+	"_id" : 1,
+	"StudName" : "Yash",
+	"Grade" : "vii",
+	"Hobbies" : "InternetSurfing"
+}
+{
+	"_id" : 3,
+	"Grade" : "vii",
+	"StudName" : "Aryan",
+	"Hobbies" : "skating",
+	"Location" : null
+}
+> db.Student.find().sort({StudName:1}).pretty();
+{
+	"_id" : 3,
+	"Grade" : "vii",
+	"StudName" : "Aryan",
+	"Hobbies" : "skating",
+	"Location" : null
+}
+{
+	"_id" : 1,
+	"StudName" : "Yash",
+	"Grade" : "vii",
+	"Hobbies" : "InternetSurfing"
+}
+{
+	"_id" : ObjectId("6253f413e88b8c9e787b194e"),
+	"StudName" : "Chethana",
+	"Greade" : "vi"
+}
+> db.Student.find().skip(2).pretty()
+{
+	"_id" : ObjectId("6253f413e88b8c9e787b194e"),
+	"StudName" : "Chethana",
+	"Greade" : "vi"
+}
+> db.food.insert( { _id:1, fruits:['grapes','mango','apple';] } )
+2022-04-11T15:05:51.894+0530 E QUERY    [thread1] SyntaxError: missing ] after element list @(shell):1:57
+> db.food.insert({_id:1,fruits:['grapes','mango','apple']})
+WriteResult({ "nInserted" : 1 })
+> db.food.insert({_id:2,fruits:['grapes','mango','cherry']})
+WriteResult({ "nInserted" : 1 })
+> db.food.insert({_id:3,fruits:['banana','mango']})
+WriteResult({ "nInserted" : 1 })
+> db.food.find({fruits:['grapes','mango','apple']}).pretty();
+{ "_id" : 1, "fruits" : [ "grapes", "mango", "apple" ] }
+> db.food.find({'fruits.1':'grapes'})
+> db.food.find({"fruits":{$size:2}})
+{ "_id" : 3, "fruits" : [ "banana", "mango" ] }
+> db.food.find({_id:1},{"fruits":{$slice:2}})
+{ "_id" : 1, "fruits" : [ "grapes", "mango" ] }
+> db.food.find({fruits:{$all:["mango","grapes"]}})
+{ "_id" : 1, "fruits" : [ "grapes", "mango", "apple" ] }
+{ "_id" : 2, "fruits" : [ "grapes", "mango", "cherry" ] }
+> db.food.update({_id:3},{$set:{"fruits.1":"apple"}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.food.update({_id:2},{$push:{price:{grapes:80,mango:200,cherry:100}}})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> 
+> 
+> 
+> 
+> 
+> db.createCollection("Customers");
+{
+	"ok" : 0,
+	"errmsg" : "a collection 'yk.Customers' already exists",
+	"code" : 48,
+	"codeName" : "NamespaceExists"
+}
+db.Customers.insert({_custID:1,AcctBal:'100000',AcctType:"saving"});
+WriteResult({ "nInserted" : 1 })
+> db.Customers.aggregate({$group:{_id:"$custID",TotAccBal:{$sum:"$AccBal"}}});
+{ "_id" : null, "TotAccBal" : 0 }
+db.Customers.aggregate({$match:{AcctType:"saving"}},{$group:{_id:"$custID",TotAccBal:{$sum:"$AccBal"}}});
+{ "_id" : null, "TotAccBal" : 0 }
+db.Customers.aggregate({$match:{AcctType:"saving"}},{$group:{_id:"$custID",TotAccBal:{$sum:"$AccBal"}}},{$match:{TotAccBal:{$gt:1200}}});
+
