@@ -1,0 +1,44 @@
+(base) bmsce@bmsce-Precision-T1700:~$ spark-shell
+22/07/02 09:33:57 WARN Utils: Your hostname, bmsce-Precision-T1700 resolves to a loopback address: 127.0.1.1; using 10.124.7.83 instead (on interface enp1s0)
+22/07/02 09:33:57 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+22/07/02 09:33:58 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+Spark context Web UI available at http://10.124.7.83:4040
+Spark context available as 'sc' (master = local[*], app id = local-1656734644119).
+Spark session available as 'spark'.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.4.8
+      /_/
+         
+Using Scala version 2.11.12 (OpenJDK 64-Bit Server VM, Java 1.8.0_232)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala> val data=sc.textFile("/home/bmsce/Desktop/sparkdata.txt")
+data: org.apache.spark.rdd.RDD[String] = /home/bmsce/Desktop/sparkdata.txt MapPartitionsRDD[1] at textFile at <console>:24
+
+scala> data.collect;
+res0: Array[String] = Array(hi how are you, how is your job, how is your family, how is your brother, how is your sister)
+
+scala> val splitdata=data.flatMap(line=>line.split(" "));
+splitdata: org.apache.spark.rdd.RDD[String] = MapPartitionsRDD[2] at flatMap at <console>:25
+
+scala> splitdata.collect;
+res1: Array[String] = Array(hi, how, are, you, how, is, your, job, how, is, your, family, how, is, your, brother, how, is, your, sister)
+
+scala> val mapdata=splitdata.map(word=>(word,1));
+mapdata: org.apache.spark.rdd.RDD[(String, Int)] = MapPartitionsRDD[3] at map at <console>:25
+
+scala> mapdata.collect;
+res2: Array[(String, Int)] = Array((hi,1), (how,1), (are,1), (you,1), (how,1), (is,1), (your,1), (job,1), (how,1), (is,1), (your,1), (family,1), (how,1), (is,1), (your,1), (brother,1), (how,1), (is,1), (your,1), (sister,1))
+
+scala> val reducedata=mapdata.reduceByKey(_+_);
+reducedata: org.apache.spark.rdd.RDD[(String, Int)] = ShuffledRDD[4] at reduceByKey at <console>:25
+
+scala> reducedata.collect;
+res4: Array[(String, Int)] = Array((are,1), (brother,1), (family,1), (hi,1), (how,5), (is,4), (job,1), (sister,1), (you,1), (your,4))
